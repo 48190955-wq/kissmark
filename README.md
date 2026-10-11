@@ -1,13 +1,6 @@
 
-<h1 align="center">Slenderman 2.0</h1>
+<h1 align="center">KISSMARK</h1>
 
-
-<h2 align="center">Demo del Proyecto</h2>
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=qeuFMNZoxDI" target="_blank" rel="noopener noreferrer">
-    <img src="https://i.postimg.cc/sxD8cN4H/Untitled-design-1.png" alt="Demo del Proyecto" width="600">
-  </a>
-</p>
 
 
 <h2>Tabla de Contenidos</h2>
