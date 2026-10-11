@@ -13,6 +13,11 @@ public class SlenderManAI : MonoBehaviour
     public AudioClip teleportSound; // Reference to the teleport sound effect
     private AudioSource audioSource;
 
+    public float chaseSpeed = 3f; // Speed when chasing the player
+    public float chaseDistance = 15f; // Distance at which Slenderman starts chasing
+    public float stopChaseDistance = 20f; // Distance at which Slenderman stops chasing
+    private bool isChasing = false;
+
     public GameObject staticObject; // Reference to the "static" GameObject
     public float staticActivationRange = 5f; // Range at which "static" should be activated
     public float deathActivationRange = 2f; // Range at which death should be activated
@@ -104,10 +109,21 @@ public class SlenderManAI : MonoBehaviour
             }
         }
 
+        // Chase logic
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        if (distanceToPlayer <= chaseDistance && !isDeathVideoPlaying)
+        {
+            isChasing = true;
+            ChasePlayer();
+        }
+        else if (distanceToPlayer > stopChaseDistance)
+        {
+            isChasing = false;
+        }
+
         RotateTowardsPlayer();
 
         // Check player distance and toggle the "static" object accordingly
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         if (distanceToPlayer <= deathActivationRange)
         {
             // Freeze the player's movement
@@ -199,6 +215,8 @@ public class SlenderManAI : MonoBehaviour
             baseTeleportDistance = 15f + (pageCount - 2) * 1f; // Increase teleport distance
             baseTeleportCooldown = 15f - (pageCount - 2) * 0.5f; // Decrease teleport cooldown
             baseChaseProbability = 0.2f + (pageCount - 2) * 0.05f; // Increase catch probability
+            chaseSpeed = 3f + (pageCount - 2) * 0.5f; // Increase chase speed
+            chaseDistance = 15f + (pageCount - 2) * 2f; // Increase chase distance
         }
         else if (pageCount == 7)
         {
@@ -206,6 +224,8 @@ public class SlenderManAI : MonoBehaviour
             baseTeleportDistance = 15f; // Increase teleport distance
             baseTeleportCooldown = 7f; // Decrease teleport cooldown
             baseChaseProbability = 1f; // Maximum catch probability
+            chaseSpeed = 6f; // Maximum chase speed
+            chaseDistance = 25f; // Maximum chase distance
         }
         else if (pageCount == 8)
         {
@@ -257,5 +277,14 @@ public class SlenderManAI : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
+    }
+
+    private void ChasePlayer()
+    {
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        directionToPlayer.y = 0f; // Keep Slenderman on the ground
+
+        Vector3 move = directionToPlayer * chaseSpeed * Time.deltaTime;
+        transform.position += move;
     }
 }
